@@ -1,0 +1,30 @@
+{
+   "name": "test-apollo-express-server",
+   "version": "1.0.0",
+   "main": "index.js",
+   "type": "module",
+   "license": "UNLICENSED",
+   "scripts": {
+      "start": "ts-node src/index.ts",
+      "build": "tsc",
+      "dev": "nodemon --watch src --ext ts,tsx --exec npx tsx src/index.ts",
+      "typeorm": "typeorm-ts-node-commonjs"
+   },
+   "dependencies": {
+      "@types/express": "^5.0.0",
+      "apollo-server-express": "^3.13.0",
+      "cors": "^2.8.5",
+      "express": "^4.21.2",
+      "graphql": "^16.10.0",
+      "pg": "^8.4.0",
+      "reflect-metadata": "^0.1.13",
+      "typeorm": "0.3.20"
+   },
+   "devDependencies": {
+      "@types/node": "^16.11.10",
+      "nodemon": "^3.1.9",
+      "ts-node": "10.9.1",
+      "tsx": "^4.19.2",
+      "typescript": "4.5.2"
+   }
+}
