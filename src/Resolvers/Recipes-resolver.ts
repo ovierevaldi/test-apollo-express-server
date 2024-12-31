@@ -35,15 +35,16 @@ class updateRecipeInput{
     ingredients? : string[]
 }
 
+@InputType()
 class recipeArgs {
-    @Field(type => Int)
+    @Field(type => Int, {nullable: true})
     @Min(0)
-    skip: number = 0;
+    skip?: number = 0;
 
-    @Field(type => Int)
+    @Field(type => Int, {nullable: true})
     @Min(1)
     @Max(50)
-    take: number = 25;
+    take?: number = 25;
 }
 
 
@@ -68,8 +69,10 @@ class RecipeResolver{
     }
 
     @Query(() => [Recipe])
-    async getAllRecipes(){
-        return this.recipes;
+    async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs){
+        const startIndex = arg?.skip;
+        const endIndex = arg?.take;
+        return this.recipes.slice(startIndex, endIndex);
     }
 
     @Mutation(() => String)
