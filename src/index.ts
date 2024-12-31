@@ -43,16 +43,6 @@ await apolloServer.start();
 
 apolloServer.applyMiddleware({ app });
 
-// app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-//     if(err instanceof ApolloError){
-//         if(err.extensions.statusCode === 404){
-//             res.status(404).json({
-//                 message: err.message
-//             })
-//         }
-//     }
-// })
-
 app.get('/', (req: Request, res: Response) => {
     res.send('Test')
 });
