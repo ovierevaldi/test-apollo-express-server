@@ -1,6 +1,7 @@
 import "reflect-metadata"
 import { createConnection, DataSource } from "typeorm"
 import { Photo } from "./entity/Photo"
+import Recipe from "./entity/Recipes";
 
 const TypeORMDB = () => {
     const AppDataSource = new DataSource({
@@ -12,7 +13,7 @@ const TypeORMDB = () => {
         database: "test-server",
         synchronize: true,
         logging: false,
-        entities: [Photo],
+        entities: [Photo, Recipe],
         migrations: [],
         subscribers: [],
     });
@@ -36,13 +37,15 @@ const TypeORMDB = () => {
             database: "test-server",
             synchronize: true,
             logging: false,
-            entities: [Photo],
+            entities: [Photo, Recipe],
             migrations: [],
             subscribers: [],
         });
         
         if(conn.options.database)
             console.log("Database connected :", conn.options.database);
+
+        return conn;
     }
    
     return {
