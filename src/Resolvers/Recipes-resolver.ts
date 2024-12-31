@@ -39,13 +39,14 @@ class updateRecipeInput{
 
 @InputType()
 class recipeArgs {
-    @Field(type => Int, {nullable: true})
+
     @Min(0)
+    @Field(type => Int, {nullable: true})
     skip?: number = 0;
 
-    @Field(type => Int, {nullable: true})
     @Min(1)
     @Max(50)
+    @Field(type => Int, {nullable: true})
     take?: number = 25;
 }
 
@@ -73,7 +74,7 @@ class RecipeResolver{
                 }
             })
             if(recipe)
-        return recipe; 
+                return recipe;
             else{
                 throw new ApolloError('Cannot Find The Recipes', 'RECIPE_NOT_FOUND', {
                     statusCode: 404,
@@ -99,7 +100,7 @@ class RecipeResolver{
         const recipeData = {...data };
         try {
             await getRepository(Recipe).save(recipeData);
-        return 'Success Creating Recipe';
+            return 'Success Creating Recipe';
         } catch (error) {
             console.log(error);
             return 'Cannot Create Recipe!'
