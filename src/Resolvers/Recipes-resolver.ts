@@ -1,6 +1,8 @@
 import { Arg, Authorized, buildSchema, Field, GraphQLISODateTime, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
 import Recipe from "../entity/Recipes";
 import { ArrayMaxSize, Length, Max, MaxLength, Min } from "class-validator";
+import { getRepository } from "typeorm";
+import { ApolloError } from "apollo-server-express";
 
 @InputType()
 class newRecipeInput{
@@ -64,22 +66,44 @@ class RecipeResolver{
 
     @Query(returns => Recipe)
     async getRecipes(@Arg("id", type => String) id: string){
-        const recipe = this.recipes.find( rec => rec.id === id);
+        try {
+            const recipe =  await getRepository(Recipe).findOne({
+                where: {
+                    id: id
+                }
+            })
+            if(recipe)
         return recipe; 
+            else{
+                throw new ApolloError('Cannot Find The Recipes', 'RECIPE_NOT_FOUND', {
+                    statusCode: 404,
+                    customMessage: `No Recipe is found with the code ${id}`
+                });
+            }
+        } catch (error) {
+            return error;
+        }
     }
 
     @Query(() => [Recipe])
     async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs){
         const startIndex = arg?.skip;
         const endIndex = arg?.take;
-        return this.recipes.slice(startIndex, endIndex);
+        const recipes = await getRepository(Recipe).find();
+        // return this.recipes.slice(startIndex, endIndex);
+        return recipes;
     }
 
     @Mutation(() => String)
     async addRecipe(@Arg('data', type => newRecipeInput) data: newRecipeInput){
-        const recipe = { id: `${this.recipes.length + 1}`, ...data };
-        this.recipes.push(recipe);
+        const recipeData = {...data };
+        try {
+            await getRepository(Recipe).save(recipeData);
         return 'Success Creating Recipe';
+        } catch (error) {
+            console.log(error);
+            return 'Cannot Create Recipe!'
+        }
     }
 
     @Mutation(() => String)
