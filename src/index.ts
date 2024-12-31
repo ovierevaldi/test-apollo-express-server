@@ -1,7 +1,11 @@
 import { ApolloServer, gql } from 'apollo-server-express';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import 'reflect-metadata'
+import "reflect-metadata";
+import TypeORMDB from './data-source';
+import { buildSchema } from 'graphql';
+import schema from './Resolvers/Recipes-resolver';
+import { GraphQLISODateTime } from 'type-graphql';
 
 const app : any = express();
 app.use(cors());
@@ -21,9 +25,13 @@ const resolvers = {
 }
 
 const apolloServer = new ApolloServer({
-    typeDefs: typeDefs,
-    resolvers: resolvers
+   schema,
+   resolvers: {
+    DateTime: GraphQLISODateTime
+    }
 });
+
+await TypeORMDB().connect();
 
 await apolloServer.start();
 
