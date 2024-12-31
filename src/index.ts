@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloError, ApolloServer, gql } from 'apollo-server-express';
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import "reflect-metadata";
@@ -25,17 +25,33 @@ const resolvers = {
 }
 
 const apolloServer = new ApolloServer({
-   schema,
-   resolvers: {
-    DateTime: GraphQLISODateTime
+    schema,
+    resolvers: {
+        DateTime: GraphQLISODateTime
+    },
+    formatError: (error) => {
+        return {
+            message: error.message,
+            code: error.extensions.statusCode || 'INTERNAL_SERVER_ERROR'
+        }
     }
 });
 
-await TypeORMDB().connect();
+export const dbInstance = await TypeORMDB().connect();
 
 await apolloServer.start();
 
-apolloServer.applyMiddleware({ app })
+apolloServer.applyMiddleware({ app });
+
+// app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+//     if(err instanceof ApolloError){
+//         if(err.extensions.statusCode === 404){
+//             res.status(404).json({
+//                 message: err.message
+//             })
+//         }
+//     }
+// })
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Test')
