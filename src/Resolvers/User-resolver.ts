@@ -32,32 +32,29 @@ export default class UserResolver{
 
     @Mutation(() => User)
     async createUser(@Arg('data', () => UserInput) data: UserInput){
-        const user =  await getRepository(User).save({...data });
-        return user;
-        
-        // const errors = await validate(data);
-        //     if (errors.length > 0) {
-        //         const reason = errors.map(value => {
-        //             if(value.constraints)
-        //                 return Object.values(value.constraints).join(',')
-        //         });
+        const errors = await validate(data);
+            if (errors.length > 0) {
+                const reason = errors.map(value => {
+                    if(value.constraints)
+                        return Object.values(value.constraints).join(',')
+                });
 
-        //         throw new ApolloError('Cannot Create user', 'VALIDATION_ERROR',{
-        //             statusCode: 401,
-        //             reason: reason
-        //         });
-        // }
-        // try {
-        //     const user =  await getRepository(User).save({...data });
-        //     return user;
-        // } catch (error) {
-        //     const err = error as ErrorType
-        //     if (err.code === '23505') {
-        //         throw new ApolloError(`Username ${data.username} already exsist.`, 'DUPLICATE_FIELD', {
-        //             statusCode: 402,
-        //             reason: ['Username Already Exsist']
-        //         });
-        //     }
-        // }
+                throw new ApolloError('Cannot Create user', 'VALIDATION_ERROR',{
+                    statusCode: 401,
+                    reason: reason
+                });
+        }
+        try {
+            const user =  await getRepository(User).save({...data });
+            return user;
+        } catch (error) {
+            const err = error as ErrorType
+            if (err.code === '23505') {
+                throw new ApolloError(`Username ${data.username} already exsist.`, 'DUPLICATE_FIELD', {
+                    statusCode: 402,
+                    reason: ['Username Already Exsist']
+                });
+            }
+        }
     }
 }
