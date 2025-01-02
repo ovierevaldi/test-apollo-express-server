@@ -3,9 +3,10 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import "reflect-metadata";
 import TypeORMDB from './data-source';
-import { buildSchema } from 'graphql';
 import schema from './Resolvers/Recipes-resolver';
-import { GraphQLISODateTime } from 'type-graphql';
+import { buildSchema, GraphQLISODateTime } from 'type-graphql';
+import RecipeResolver from './Resolvers/Recipes-resolver';
+import UserResolver from './Resolvers/User-resolver';
 
 const app : any = express();
 app.use(cors());
@@ -24,24 +25,28 @@ const resolvers = {
     }
 }
 
-const apolloServer = new ApolloServer({
-    schema,
-    resolvers: {
-        DateTime: GraphQLISODateTime
-    },
-    formatError: (error) => {
-        return {
-            message: error.message,
-            code: error.extensions.statusCode || 'INTERNAL_SERVER_ERROR'
+const apolloServer = async () => {
+    return new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [RecipeResolver, UserResolver]
+        }),
+        resolvers: {
+            DateTime: GraphQLISODateTime
+        },
+        formatError: (error) => {
+            return {
+                message: error.message,
+                code: error.extensions.statusCode || 'INTERNAL_SERVER_ERROR'
+            }
         }
-    }
-});
+    });
+};
 
 export const dbInstance = await TypeORMDB().connect();
 
-await apolloServer.start();
-
-apolloServer.applyMiddleware({ app });
+const apolloServerRef = await apolloServer();
+await apolloServerRef.start();
+apolloServerRef.applyMiddleware({ app });
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Test')

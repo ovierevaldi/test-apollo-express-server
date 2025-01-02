@@ -50,9 +50,8 @@ class recipeArgs {
     take?: number = 25;
 }
 
-
 @Resolver(Recipe)
-class RecipeResolver{
+export default class RecipeResolver{
     constructor(){}
 
     private recipes: Recipe[] = [
@@ -141,9 +140,3 @@ class RecipeResolver{
         return 'Success Update Recipe'
     }
 };
-
-const schema = await buildSchema({
-    resolvers: [RecipeResolver]
-});
-
-export default schema;
