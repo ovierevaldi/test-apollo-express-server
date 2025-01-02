@@ -2,6 +2,7 @@ import "reflect-metadata"
 import { createConnection, DataSource } from "typeorm"
 import { Photo } from "./entity/Photo"
 import Recipe from "./entity/Recipes";
+import User from "./entity/User";
 
 const TypeORMDB = () => {
     const AppDataSource = new DataSource({
@@ -37,7 +38,7 @@ const TypeORMDB = () => {
             database: "test-server",
             synchronize: true,
             logging: false,
-            entities: [Photo, Recipe],
+            entities: [Photo, Recipe, User],
             migrations: [],
             subscribers: [],
         });
