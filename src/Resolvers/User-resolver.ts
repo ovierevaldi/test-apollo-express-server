@@ -1,5 +1,5 @@
 import { Arg, Field, InputType, Mutation, Query } from "type-graphql";
-import User from "../entity/User";
+import User from "../Entity/User";
 import { IsNotEmpty, IsString, MaxLength, MinLength, validate } from "class-validator";
 import { getRepository, QueryFailedError } from "typeorm";
 import { IsNoWhitespace } from "../Utils/custom-decorators";

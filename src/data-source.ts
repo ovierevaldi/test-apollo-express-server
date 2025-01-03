@@ -1,8 +1,8 @@
 import "reflect-metadata"
 import { createConnection, DataSource } from "typeorm"
-import { Photo } from "./entity/Photo"
-import Recipe from "./entity/Recipes";
-import User from "./entity/User";
+import { Photo } from "./Entity/Photo"
+import Recipe from "./Entity/Recipes";
+import User from "./Entity/User";
 
 const TypeORMDB = () => {
     const AppDataSource = new DataSource({

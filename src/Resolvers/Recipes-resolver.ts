@@ -1,5 +1,5 @@
 import { Arg, Authorized, buildSchema, Ctx, Field, GraphQLISODateTime, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
-import Recipe from "../entity/Recipes";
+import Recipe from "../Entity/Recipes";
 import { ArrayMaxSize, Length, Max, MaxLength, Min } from "class-validator";
 import { getRepository } from "typeorm";
 import { ApolloError } from "apollo-server-express";
