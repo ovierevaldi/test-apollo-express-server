@@ -15,8 +15,9 @@ const ApolloGraphQLServer = {
                 DateTime: GraphQLISODateTime
             },
             context: ({req, res}) : UserContext => {
-             
-                return {  }
+                const user = req.user;
+                
+                return { user };
             },
             formatError: (error) => {
                 return {

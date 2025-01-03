@@ -1,19 +1,21 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import "reflect-metadata";
 import TypeORMDB from './data-source';
 import ApolloGraphQLServer from './Apollo/ApolloServer';
+import dotenv from 'dotenv';
+import authRoute from './Middleware/isAuth'
+
+dotenv.config();
 
 const app : any = express();
 
-app.use(cors());
-
 app.use(express.json());
 
-// Handle Request and Response Middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-    next();
-});
+app.use(cors());
+
+// Check Auth API
+app.use(authRoute);
 
 // Connect DB
 await TypeORMDB().connect();
