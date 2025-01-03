@@ -88,14 +88,9 @@ export default class RecipeResolver{
         }
     }
 
+    @Authorized("admin")
     @Query(() => [Recipe])
-    async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs, @Ctx() context?: UserContext){
-        
-        if(!context?.user)
-            throw new ApolloError('User not authenticated', 'UNAUTHORIZED', {
-                statusCode: 404,
-                reason: 'Invalid Token or Token Expired.'    
-            })
+    async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs){
 
         const startIndex = arg?.skip;
         const endIndex = arg?.take;

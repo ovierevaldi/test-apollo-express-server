@@ -3,17 +3,12 @@ import jwtProvider from "../Providers/jwt";
 
 const router = express.Router();
 
-router.use((req: Request, res: Response, next: NextFunction) => {
+router.use(async (req: Request, res: Response, next: NextFunction) => {
     const authValue = req.headers.authorization;
 
     // Check if it's a valid token
     if(authValue){
-        jwtProvider().verify(authValue, (err, decoded) => {
-            if(!decoded)
-                req.user = null;
-
-            req.user = decoded;
-        });
+        req.user = await jwtProvider().verifyUser(authValue);
     };
     next();
 })

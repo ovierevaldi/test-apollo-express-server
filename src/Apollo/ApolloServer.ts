@@ -3,13 +3,16 @@ import { buildSchema, GraphQLISODateTime } from "type-graphql";
 import RecipeResolver from "../Resolvers/Recipes-resolver";
 import UserResolver from "../Resolvers/User-resolver";
 import { UserContext } from "../Contexts/user-context";
+import { customAuthChecker } from "../Resolvers/auth-checker";
 
 const ApolloGraphQLServer = {
     createServer : async () => {
         return new ApolloServer({
             // Create Schema from type-graphql
             schema: await buildSchema({
-                resolvers: [RecipeResolver, UserResolver]
+                resolvers: [RecipeResolver, UserResolver],
+                authChecker: customAuthChecker,
+                authMode: "null"
             }),
             resolvers: {
                 DateTime: GraphQLISODateTime
