@@ -90,7 +90,13 @@ export default class RecipeResolver{
 
     @Query(() => [Recipe])
     async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs, @Ctx() context?: UserContext){
-        console.log(context?.user);
+        
+        if(!context?.user)
+            throw new ApolloError('User not authenticated', 'UNAUTHORIZED', {
+                statusCode: 404,
+                reason: 'Invalid Token or Token Expired.'    
+            })
+
         const startIndex = arg?.skip;
         const endIndex = arg?.take;
         const recipes = await getRepository(Recipe).find();
