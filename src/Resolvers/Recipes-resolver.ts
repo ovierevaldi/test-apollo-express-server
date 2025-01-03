@@ -1,9 +1,12 @@
-import { Arg, Authorized, buildSchema, Field, GraphQLISODateTime, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, buildSchema, Ctx, Field, GraphQLISODateTime, InputType, Int, Mutation, Query, Resolver } from "type-graphql";
 import Recipe from "../entity/Recipes";
 import { ArrayMaxSize, Length, Max, MaxLength, Min } from "class-validator";
 import { getRepository } from "typeorm";
 import { ApolloError } from "apollo-server-express";
+import { Context } from "..";
+import { UserContext } from "../Contexts/user-context";
 
+@Authorized("ADMIN")
 @InputType()
 class newRecipeInput{
     @Field(type => String)
@@ -86,7 +89,8 @@ export default class RecipeResolver{
     }
 
     @Query(() => [Recipe])
-    async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs){
+    async getAllRecipes(@Arg("arg", type => recipeArgs, {nullable: true}) arg?: recipeArgs, @Ctx() context?: UserContext){
+        console.log(context?.user);
         const startIndex = arg?.skip;
         const endIndex = arg?.take;
         const recipes = await getRepository(Recipe).find();

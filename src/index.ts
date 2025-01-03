@@ -1,5 +1,5 @@
 import { ApolloError, ApolloServer, gql } from 'apollo-server-express';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import "reflect-metadata";
 import TypeORMDB from './data-source';
@@ -7,11 +7,18 @@ import schema from './Resolvers/Recipes-resolver';
 import { buildSchema, GraphQLISODateTime } from 'type-graphql';
 import RecipeResolver from './Resolvers/Recipes-resolver';
 import UserResolver from './Resolvers/User-resolver';
+import { UserContext } from './Contexts/user-context';
 
 const app : any = express();
 app.use(cors());
 app.use(express.json());
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+    req.user = {
+        username: 'test'
+    };
+    next();
+});
 
 const typeDefs = gql`
     type Query {
@@ -25,6 +32,10 @@ const resolvers = {
     }
 }
 
+export interface Context {
+    authScope? : string
+}
+
 const apolloServer = async () => {
     return new ApolloServer({
         schema: await buildSchema({
@@ -32,6 +43,10 @@ const apolloServer = async () => {
         }),
         resolvers: {
             DateTime: GraphQLISODateTime
+        },
+        context: ({req, res}) : UserContext => {
+            const user = req.user || null;
+            return { user }
         },
         formatError: (error) => {
             return {
