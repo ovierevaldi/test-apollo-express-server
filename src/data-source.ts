@@ -3,6 +3,7 @@ import { createConnection, DataSource } from "typeorm"
 import { Photo } from "./Entity/Photo"
 import Recipe from "./Entity/Recipes";
 import User from "./Entity/User";
+import { Makanan } from "./Entity/Makanan/Makanan";
 
 const TypeORMDB = () => {
     const AppDataSource = new DataSource({
@@ -38,7 +39,7 @@ const TypeORMDB = () => {
             database: "test-server",
             synchronize: true,
             logging: false,
-            entities: [Photo, Recipe, User],
+            entities: [Photo, Recipe, User, Makanan],
             migrations: [],
             subscribers: [],
         });

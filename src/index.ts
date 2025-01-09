@@ -1,6 +1,6 @@
+import "reflect-metadata";
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import "reflect-metadata";
 import TypeORMDB from './data-source';
 import ApolloGraphQLServer from './Apollo/ApolloServer';
 import dotenv from 'dotenv';
@@ -30,5 +30,5 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.listen(3000, () => {
-    console.log('Server runs on port 3000')
+    console.log(`Server runs on http://localhost:3000 `)
 })
